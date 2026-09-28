@@ -21,7 +21,7 @@ public:
 
 	static void ShowClientsList()
 	{
-		if (!CheckaccessRights(clsUser::pShow))
+		if (!CheckaccessRights(clsUser::pShowClientsList))
 			return;
 
 		vector <clsBankClient> vClients = clsBankClient::GetClientsList();
