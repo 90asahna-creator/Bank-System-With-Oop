@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "clsDate.h"
 #include <fstream>
 #include "clsPerson.h"
 #include "clsString.h"
@@ -18,6 +19,17 @@ private:
 	int _Permissions;
 	bool _MarkedForDeleted = false;
 
+    string _PrepareLogInRecord(string Separator = "#//#")
+	{
+		string line = "";
+		line += clsDate::DateToString(clsDate()) + " - ";
+		line += clsDate::GetTime() + Separator;
+		line += UserName + Separator;
+		line += Password + Separator;
+		line += to_string(Permissions);
+
+		return line;
+	}
 
 	static clsUser _ConvertLineToObject(string line, string Separator = "#//#")
 	{
@@ -291,6 +303,21 @@ public:
 	bool HasPermission(enPermissions permissions)
 	{
 		return (this->Permissions == -1 || this->Permissions & permissions);
+	}
+
+    void RegisterLogIn()
+	{
+		fstream MyFile;
+		MyFile.open("Register Logins.txt", ios::out | ios::app);
+
+		string line = _PrepareLogInRecord();
+
+		if (MyFile.is_open())
+		{
+			MyFile << line << endl;
+
+			MyFile.close();
+		}
 	}
 
 };

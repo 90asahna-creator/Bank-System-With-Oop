@@ -2,6 +2,7 @@
 #include <iostream>
 #include "clsUser.h"
 #include "clsMainScreen.h"
+#include "clsDate.h"
 #include "Global.h"
 
 class clsLoginScreen : protected clsScreen
@@ -38,6 +39,8 @@ private:
 			LoginFailed = CurrentUser.IsEmpty();
 
 		} while (LoginFailed);
+
+		CurrentUser.RegisterLogIn();
 
 		clsMainScreen::ShowMainMenue();
 	}
