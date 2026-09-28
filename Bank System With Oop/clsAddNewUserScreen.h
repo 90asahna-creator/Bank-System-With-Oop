@@ -26,7 +26,7 @@ private:
 		cout << "\nShow Clients List? Y/N: ";
 		cin >> ch;
 		if (tolower(ch) == 'y')
-			Access += clsUser::enPermissions::pShow;
+			Access += clsUser::enPermissions::pShowClientsList;
 
 		cout << "\nAdd New Clients? Y/N: ";
 		cin >> ch;
@@ -57,6 +57,11 @@ private:
 		cin >> ch;
 		if (tolower(ch) == 'y')
 			Access += clsUser::enPermissions::pManageUsers;
+
+		cout << "\nShow Login Register? Y/N: ";
+		cin >> ch;
+		if (tolower(ch) == 'y')
+			Access += clsUser::enPermissions::pShowLoginRegister;
 
 		return clsUser::enPermissions(Access);
 	}
