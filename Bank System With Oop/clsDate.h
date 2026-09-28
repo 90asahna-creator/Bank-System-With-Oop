@@ -92,6 +92,20 @@ public:
 		return clsDate(Day, Month, Year);
 	}
 
+	static string GetTime()
+	{
+		string Time = "";
+
+		time_t t = time(0);
+		tm* now = localtime(&t);
+
+		Time += to_string(now->tm_hour) + ":";
+		Time += to_string(now->tm_min) + ":";
+		Time += to_string(now->tm_sec);
+
+		return Time;
+	}
+
 	static	bool IsValidDate(clsDate Date)
 	{
 
