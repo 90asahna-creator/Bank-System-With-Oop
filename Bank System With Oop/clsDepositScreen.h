@@ -60,9 +60,13 @@ public:
 
 		if (tolower(ch) == 'y')
 		{
-			Client1.Deposit(Amount);
-			cout << "\nAmount Deposited Successfully.\n";
-			cout << "\nNew Balance is: " << Client1.AccountBalance << "\n";
+			if (Client1.Deposit(Amount))
+			{
+				cout << "\nAmount Deposited Successfully.\n";
+				cout << "\nNew Balance is: " << Client1.AccountBalance << "\n";
+			}
+			else
+				cout << "\nInvalid! Transfer amount must be greater than 0.\n";
 		}
 		else
 			cout << "\nOperation was cancelled.\n";

@@ -291,23 +291,39 @@ public:
 		return Total;
 	}
 
-	void Deposit(double Amount)
+	bool Deposit(double Amount)
 	{
-		_AccountBalance += Amount;
-		Save();
+		if (Amount <= 0)
+			return false;
+		else
+		{
+			_AccountBalance += Amount;
+			Save();
+			return true;
+		}
+		
 	}
 
 	bool Withdraw(double Amount)
 	{
-		if (Amount > _AccountBalance)
+		if (Amount > _AccountBalance || Amount <= 0)
 			return false;
 		else
 		{
 			_AccountBalance -= Amount;
 			Save();
+			return true;
 		}
 	}
 
+	bool Transfer(double Amount, clsBankClient& DestinationClient)
+	{
+		if (!Withdraw(Amount))
+			return false;
+
+		DestinationClient.Deposit(Amount);
+		return true;
+	}
 
 };
 
