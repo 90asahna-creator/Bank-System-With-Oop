@@ -18,6 +18,7 @@ private:
 	float _AccountBalance;
 	bool _MarkForDelete = false;
 
+
 	static clsBankClient _ConvertLineToObject(string line, string Separator = "#//#")
 	{
 		vector <string> vString = clsString::Split(line, Separator);
@@ -116,6 +117,37 @@ private:
 		return clsBankClient(EmptyMode, "", "", "", "", "", "", 0);
 	}
 
+	//struct stTransferLog;
+    string _ConvertTransferLogToLine(double amount, clsBankClient DestinationClient, string UserName, string Separator = "#//#")
+	{
+		string line = "";
+		line += clsDate::DateToString(clsDate()) + " - ";
+		line += clsDate::GetTime() + Separator;
+		line += _AccountNumber + Separator;
+		line += DestinationClient.AccountNumber() + Separator;
+		line += to_string(amount) + Separator;
+		line += to_string(_AccountBalance) + Separator;
+		line += to_string(DestinationClient.AccountBalance) + Separator;
+		line += UserName;
+
+		return line;
+	}
+	
+	void _RegisterTransferLogin(double amount, clsBankClient DestinationClient, string UserName)
+	{
+		fstream MyFile;
+		MyFile.open("Transfer Log.txt", ios::out | ios::app);
+
+		string line = _ConvertTransferLogToLine(amount, DestinationClient, UserName);
+
+		if (MyFile.is_open())
+		{
+			MyFile << line << endl;
+
+			MyFile.close();
+		}
+	}
+
 public:
 
 	clsBankClient(enMode Mode, string FirstName, string LastName, string Email, string Phone,
@@ -126,6 +158,17 @@ public:
 		_PinCode = PinCode;
 		_AccountBalance = AccountBalance;
 	}
+
+	/*struct stTransferLog
+	{
+		string DateAndTime;
+		string AccountNumOfSourceClient;
+		string AccountNumOfDestinationClient;
+		float TransferAmount = 0;
+		double BalanceOfSourceClient;
+		double BalanceOfDestinationClient;
+		string UserName;
+	};*/
 
 	bool IsEmpty()
 	{
@@ -316,12 +359,14 @@ public:
 		}
 	}
 
-	bool Transfer(double Amount, clsBankClient& DestinationClient)
+	
+	bool Transfer(double Amount, clsBankClient& DestinationClient, string UserName)
 	{
 		if (!Withdraw(Amount))
 			return false;
 
 		DestinationClient.Deposit(Amount);
+		_RegisterTransferLogin(Amount, DestinationClient, UserName);
 		return true;
 	}
 
