@@ -148,6 +148,24 @@ private:
 		}
 	}
 
+	struct stTransferLog;
+	static stTransferLog _ConvertLineToTransferLog(string line, string Separator = "#//#")
+	{
+		vector <string> vString = clsString::Split(line, Separator);
+
+		stTransferLog TransferLog;
+		TransferLog.DateAndTime = vString[0];
+		TransferLog.SourceAccountNum = vString[1];
+		TransferLog.DestinationAccountNum = vString[2];
+		TransferLog.TransferAmount = stod(vString[3]);
+		TransferLog.SrcBalanceAfter = stod(vString[4]);
+		TransferLog.desBalanceAfter = stod(vString[5]);
+		TransferLog.UserName = vString[6];
+
+		return TransferLog;
+	}
+
+
 public:
 
 	clsBankClient(enMode Mode, string FirstName, string LastName, string Email, string Phone,
@@ -159,16 +177,16 @@ public:
 		_AccountBalance = AccountBalance;
 	}
 
-	/*struct stTransferLog
+	struct stTransferLog
 	{
 		string DateAndTime;
-		string AccountNumOfSourceClient;
-		string AccountNumOfDestinationClient;
+		string SourceAccountNum;
+		string DestinationAccountNum;
 		float TransferAmount = 0;
-		double BalanceOfSourceClient;
-		double BalanceOfDestinationClient;
+		double SrcBalanceAfter;
+		double desBalanceAfter;
 		string UserName;
-	};*/
+	};
 
 	bool IsEmpty()
 	{
@@ -359,7 +377,6 @@ public:
 		}
 	}
 
-	
 	bool Transfer(double Amount, clsBankClient& DestinationClient, string UserName)
 	{
 		if (!Withdraw(Amount))
@@ -370,5 +387,21 @@ public:
 		return true;
 	}
 
+	static vector <stTransferLog> GetTransferLog()
+	{
+		vector <stTransferLog> vTransferLog;
+		fstream MyFile;
+		MyFile.open("Transfer Log.txt", ios::in);
+		if (MyFile.is_open())
+		{
+			string line;
+
+			while (getline(MyFile, line))
+				vTransferLog.push_back(_ConvertLineToTransferLog(line));
+
+			MyFile.close();
+		}
+		return vTransferLog;
+	}
 };
 
