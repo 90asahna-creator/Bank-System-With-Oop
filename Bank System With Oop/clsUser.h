@@ -6,10 +6,12 @@
 #include <fstream>
 #include "clsPerson.h"
 #include "clsString.h"
+#include "clsUtil.h"
 using namespace std;
 
 class clsUser : public clsPerson
 {
+
 private:
 
 	enum enMode { EmptyMode = 0, UpdateMode, AddNewMode };
@@ -25,7 +27,7 @@ private:
 		line += clsDate::DateToString(clsDate()) + " - ";
 		line += clsDate::GetTime() + Separator;
 		line += UserName + Separator;
-		line += Password + Separator;
+		line += clsUtil::Encryption(Password) + Separator;
 		line += to_string(Permissions);
 
 		return line;
@@ -36,7 +38,7 @@ private:
 		vector <string> vString = clsString::Split(line, Separator);
 
 		return clsUser(UpdateMode, vString[0], vString[1], vString[2], vString[3],
-			vString[4], vString[5], stod(vString[6]));
+			vString[4], clsUtil::Decryption(vString[5]), stod(vString[6]));
 	}
 
 	static string _ConvertObjectToLine(clsUser User, string Separator = "#//#")
@@ -47,7 +49,7 @@ private:
 		DataLine += User.Email + Separator;
 		DataLine += User.Phone + Separator;
 		DataLine += User._UserName + Separator;
-		DataLine += User._Password + Separator;
+		DataLine += clsUtil::Encryption(User._Password) + Separator;
 		DataLine += to_string(User._Permissions);
 
 		return DataLine;
@@ -136,7 +138,7 @@ private:
 
 		Record.DateAndTime = vRecords[0];
 		Record.UserName = vRecords[1];
-		Record.Password = vRecords[2];
+		Record.Password = clsUtil::Decryption(vRecords[2]);
 		Record.Permissions = stoi(vRecords[3]);
 
 		return Record;
